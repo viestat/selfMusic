@@ -103,12 +103,12 @@ Set your Client ID, Redirect URL, Scopes and **start the auth process**
 
 | Parameter |description|
 | ------ |:-------------------------------|
-|Client ID|`(String)` The client ID of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
-|Redirect URL|`(String)` The Redirect URL of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
-|Scopes|`(Array)` list of scopes of your app, [see here](https://developer.spotify.com/web-api/using-scopes/)  |
-|Token Swap URL|`(String)` The backend URL to exchange authorization code for access token (only Authorization Code Flow [see here](https://developer.spotify.com/web-api/authorization-guide/#supported-authorization-flows))|
-|Token Refresh URL|`(String)` The backend URL to refresh an authorization code (only Authorization Code Flow [see here](https://developer.spotify.com/web-api/authorization-guide/#supported-authorization-flows))|
-|Callback|`(Function)`a callback to handle the login success/error|
+|clientID|`(String)` The client ID of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
+|redirectURL|`(String)` The Redirect URL of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
+|requestedScopes|`(Array)` list of scopes of your app, [see here](https://developer.spotify.com/web-api/using-scopes/)  |
+|tokenSwapURL|`(String)` Backend URL to exchange authorization code for access token (only Authorization Code Flow [see here](https://developer.spotify.com/web-api/authorization-guide/#supported-authorization-flows))|
+|tokenRefreshURL|`(String)` Backend URL to refresh an access token (only Authorization Code Flow [see here](https://developer.spotify.com/web-api/authorization-guide/#supported-authorization-flows))|
+|callback|`(Function)`a callback to handle the login success/error|
 
 ### Implicit Grant Flow
 
