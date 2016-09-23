@@ -99,8 +99,8 @@ Set your Client ID, Redirect URL, Scopes and **start the auth process**
 |Client ID|`(String)` The client ID of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
 |Redirect URL|`(String)` The Redirect URL of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
 |Scopes|`(Array)` list of scopes of your app, [see here](https://developer.spotify.com/web-api/using-scopes/)  |
-|Token Swap URL|`(String)` The backend URL to exchange authorization code for access token (only Authentication Code Flow)|
-|Token Refresh URL|`(String)` The backend URL to refresh an authorization code (only Authentication Code Flow)|
+|Token Swap URL|`(String)` The backend URL to exchange authorization code for access token (only Authorization Code Flow)|
+|Token Refresh URL|`(String)` The backend URL to refresh an authorization code (only Authorization Code Flow)|
 |Callback|`(Function)`a callback to handle the login success/error|
 
 ### Implicit Grant Flow"
@@ -115,7 +115,7 @@ const options = {
 SpotifyAuth.login(options,(error)=>{console.log(error)});
 `````
 
-### Authentication Code Flow
+### Authorization Code Flow
 
 `````
 const options = {
