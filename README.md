@@ -67,16 +67,23 @@ var SpotifyAuth = NativeModules.SpotifyAuth;
 
 class yourComponent extends Component {
 	//Some code ...
+
 	someMethod(){
     //You need this to Auth a user, without it you cant use any method!
-		SpotifyAuth.setClientID('Your ClientId','Your redirectURL', ['streaming'], (error)=>{
-        if(error){
+
+    const options = {
+		clientID: 'your-clientID',
+		redirectURL: 'your-app-schema://callback',
+		requestedScopes: ['streaming',...]
+	};
+
+	SpotifyAuth.login(options, (error) => {
+		if (error) {
           //handle error
         } else {
           //handle success
         }
-      });
-	}
+	});
 }
 ```  
 
@@ -103,7 +110,7 @@ Set your Client ID, Redirect URL, Scopes and **start the auth process**
 |Token Refresh URL|`(String)` The backend URL to refresh an authorization code (only Authorization Code Flow)|
 |Callback|`(Function)`a callback to handle the login success/error|
 
-### Implicit Grant Flow"
+### Implicit Grant Flow
 
 `````
 const options = {
