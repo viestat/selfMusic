@@ -16,6 +16,8 @@
 @property (nonatomic, strong) SPTAudioStreamingController *player;
 @property (nonatomic, strong) NSString *clientID;
 @property (nonatomic, strong) NSArray *requestedScopes;
+@property (nonatomic, strong) NSURL *tokenSwapURL;
+@property (nonatomic, strong) NSURL *tokenRefreshURL;
 @end
 
 @implementation SpotifyAuth
@@ -23,17 +25,23 @@
 RCT_EXPORT_MODULE()
 
 //Start Auth process
-RCT_EXPORT_METHOD(setClientID:(NSString *) clientID
-                  setRedirectURL:(NSString *) redirectURL
-                  setRequestedScopes:(NSArray *) requestedScopes
+RCT_EXPORT_METHOD(login:(NSDictionary *) options
                   callback:(RCTResponseSenderBlock)block)
 {
+  NSString *clientID = options[@"clientID"];
+  NSString *redirectURL = options[@"redirectURL"];
+  NSArray *requestedScopes = options[@"requestedScopes"];
+  NSURL *tokenSwapURL = [NSURL URLWithString:options[@"tokenSwapURL"]];
+  NSURL *tokenRefreshURL = [NSURL URLWithString:options[@"tokenRefreshURL"]];
+  
   SpotifyAuth *sharedManager = [SpotifyAuth sharedManager];
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   //set the sharedManager properties
   [sharedManager setClientID:clientID];
   [sharedManager setRequestedScopes:requestedScopes];
   [sharedManager setMyScheme:redirectURL];
+  [sharedManager setTokenSwapURL:tokenSwapURL];
+  [sharedManager setTokenRefreshURL:tokenRefreshURL];
 
    //Observer for successful login
    [center addObserverForName:@"loginRes" object:nil queue:nil usingBlock:^(NSNotification *notification)
@@ -47,7 +55,7 @@ RCT_EXPORT_METHOD(setClientID:(NSString *) clientID
      
    }];
 
-  [self startAuth:clientID setRedirectURL:redirectURL setRequestedScopes:requestedScopes];
+  [self startAuth:clientID setRedirectURL:redirectURL setRequestedScopes:requestedScopes setTokenSwapURL:tokenSwapURL setTokenRefreshURL:tokenRefreshURL];
 }
 
 /////////////////////////////////
@@ -390,7 +398,11 @@ RCT_EXPORT_METHOD(performSearchWithQuery:(NSString *)searchQuery
 /////////////////////////////////
 
 
-- (BOOL)startAuth:(NSString *) clientID setRedirectURL:(NSString *) redirectURL setRequestedScopes:(NSArray *) requestedScopes {
+- (BOOL)startAuth:(NSString *) clientID
+        setRedirectURL:(NSString *) redirectURL
+    setRequestedScopes:(NSArray *) requestedScopes
+       setTokenSwapURL:(NSURL *) tokenSwapURL
+    setTokenRefreshURL:(NSURL *) tokenRefreshURL {
   NSMutableArray *scopes = [NSMutableArray array];
   //Turn scope arry of strings into an array of SPTAuth...Scope objects
   for (int i = 0; i < [requestedScopes count]; i++) {
@@ -422,9 +434,11 @@ RCT_EXPORT_METHOD(performSearchWithQuery:(NSString *)searchQuery
    FOUNDATION_EXPORT NSString * const SPTAuthStreamingScope;
    */
   [[SPTAuth defaultInstance] setClientID:clientID];
+  [[SPTAuth defaultInstance] setTokenSwapURL:tokenSwapURL];
+  [[SPTAuth defaultInstance] setTokenRefreshURL:tokenRefreshURL];
   [[SPTAuth defaultInstance] setRedirectURL:[NSURL URLWithString:redirectURL]];
   [[SPTAuth defaultInstance] setRequestedScopes:scopes];
-  
+
   // Construct a login URL 
   NSURL *loginURL = [[SPTAuth defaultInstance] loginURL];
 
@@ -436,14 +450,13 @@ RCT_EXPORT_METHOD(performSearchWithQuery:(NSString *)searchQuery
   //Present the webView over the rootView
   [delegate.window.rootViewController presentViewController: controller animated:YES completion:nil];
   
-
-  
   return YES;
 }
 
 -(void)urlCallback: (NSURL *)url {
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   NSMutableDictionary *loginRes =  [NSMutableDictionary dictionary];
+  
   if ([[SPTAuth defaultInstance] canHandleURL:url]) {
     [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url callback:^(NSError *error, SPTSession *session) {
       
@@ -487,7 +500,7 @@ RCT_EXPORT_METHOD(performSearchWithQuery:(NSString *)searchQuery
       if(error != nil){
         NSLog(@"Error: %@", error);
         //launch the login again
-        [sharedManager startAuth:sharedManager.clientID setRedirectURL:sharedManager.myScheme setRequestedScopes:sharedManager.requestedScopes];
+        [sharedManager startAuth:sharedManager.clientID setRedirectURL:sharedManager.myScheme setRequestedScopes:sharedManager.requestedScopes setTokenSwapURL:sharedManager.tokenSwapURL setTokenRefreshURL:sharedManager.tokenRefreshURL];
       } else {
         [sharedManager setSession:session];
         [[sharedManager player] loginWithAccessToken:session.accessToken];
@@ -511,6 +524,14 @@ RCT_EXPORT_METHOD(performSearchWithQuery:(NSString *)searchQuery
 
 -(void)setRequestedScopes:(NSArray *)requestedScopes{
   _requestedScopes = requestedScopes;
+}
+
+-(void)setTokenSwapURL:(NSURL *)tokenSwapURL{
+  _tokenSwapURL = tokenSwapURL;
+}
+
+-(void)setTokenRefreshURL:(NSURL *)tokenRefreshURL{
+  _tokenRefreshURL = tokenRefreshURL;
 }
 
 + (id)sharedManager {
