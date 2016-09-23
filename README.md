@@ -49,7 +49,7 @@ ___
 4. Please folow the instructions on the **"Creating Your Client ID, Secret and Callback URI"** and **"Setting Up Your Build Environment"** sections of the [*Spotify iOS SDK Tutorial*](https://developer.spotify.com/technologies/spotify-ios-sdk/tutorial/) 
 >**Important Note!** When adding frameworks to the list in the "**Link Binary With Libraries**" section you wll need to add `WebKit.framework` in addition to those mentioned in the tutorial.
 
-5. From this project directory, go to `react-native-spotify/SpotifyModule/ios` and copy the following files to the `ios` directory of your project:
+5. From this project directory, go to `react-native-spotify/spotifyModule/ios` and copy the following files to the `ios` directory of your project:
 	* `SpotifyLoginViewController.m`
 	* `SpotifyLoginViewController.h`
 	* `SpotifyAuth.m`
