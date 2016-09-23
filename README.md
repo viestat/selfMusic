@@ -101,7 +101,7 @@ ___
 Set your Client ID, Redirect URL, Scopes and **start the auth process**
 
 
-| Parameter |description|
+| Option |description|
 | ------ |:-------------------------------|
 |clientID|`(String)` The client ID of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
 |redirectURL|`(String)` The Redirect URL of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
