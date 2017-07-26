@@ -67,16 +67,23 @@ var SpotifyAuth = NativeModules.SpotifyAuth;
 
 class yourComponent extends Component {
 	//Some code ...
+
 	someMethod(){
     //You need this to Auth a user, without it you cant use any method!
-		SpotifyAuth.setClientID('Your ClientId','Your redirectURL', ['streaming'], (error)=>{
-        if(error){
+
+    const options = {
+		clientID: 'your-clientID',
+		redirectURL: 'your-app-schema://callback',
+		requestedScopes: ['streaming',...]
+	};
+
+	SpotifyAuth.login(options, (error) => {
+		if (error) {
           //handle error
         } else {
           //handle success
         }
-      });
-	}
+	});
 }
 ```  
 
@@ -87,23 +94,47 @@ ___
 
 ### Auth:
 
-**setClientID:setRedirectURL:setRequestedScopes:callback**
+**options:callback**
 
 > **You need this to Auth a user, without it you cant use any other methods!**
 
 Set your Client ID, Redirect URL, Scopes and **start the auth process**
 
 
-| Parameter |description|
+| Option |description|
 | ------ |:-------------------------------|
-|Client ID|`(String)` The client ID of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
-|Redirect URL|`(String)` The Redirect URL of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
-|Scopes|`(Array)` list of scopes of your app, [see here](https://developer.spotify.com/web-api/using-scopes/)  |
-|Callback|`(Function)`a callback to handle the login success/error|
+|clientID|`(String)` The client ID of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
+|redirectURL|`(String)` The Redirect URL of your [registered Spotify app](https://developer.spotify.com/my-applications/#!/applications)|
+|requestedScopes|`(Array)` list of scopes of your app, [see here](https://developer.spotify.com/web-api/using-scopes/)  |
+|tokenSwapURL|`(String)` Backend URL to exchange authorization code for access token (only Authorization Code Flow [see here](https://developer.spotify.com/web-api/authorization-guide/#supported-authorization-flows))|
+|tokenRefreshURL|`(String)` Backend URL to refresh an access token (only Authorization Code Flow [see here](https://developer.spotify.com/web-api/authorization-guide/#supported-authorization-flows))|
+|callback|`(Function)`a callback to handle the login success/error|
 
-Example:
+### Implicit Grant Flow
 
-`SpotifyAuth.setClientID('your-clientID','your-redirectURL',['streaming',...],(error)=>{console.log(error)});`
+`````
+const options = {
+	clientID: 'your-clientID',
+	redirectURL: 'your-app-schema://callback',
+	requestedScopes: ['streaming',...]
+};
+
+SpotifyAuth.login(options,(error)=>{console.log(error)});
+`````
+
+### Authorization Code Flow
+
+`````
+const options = {
+	clientID: 'your-clientID',
+	redirectURL: 'your-app-schema://callback',
+	requestedScopes: ['streaming',...],
+	tokenSwapURL: 'http://your.backend.com/token/swap',
+	tokenRefreshURL: 'http://your.backend.com/token/refresh'
+};
+
+SpotifyAuth.login(options,(error)=>{console.log(error)});
+`````
 
 ### SPTAudioStreamingController Class:
 ### *Properties:*
@@ -118,7 +149,7 @@ Returns true when SPTAudioStreamingController is initialized, otherwise false
 
 Example:
 
-`SpotifyModule.initialized((res)=>{console.log(res);});`
+`SpotifyAuth.initialized((res)=>{console.log(res);});`
 
 **[loggedIn](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/loggedIn)**
 
@@ -131,7 +162,7 @@ Returns true if the receiver is logged into the Spotify service, otherwise false
 
 Example:
 
-`SpotifyModule.loggedIn((res)=>{console.log(res);});`
+`SpotifyAuth.loggedIn((res)=>{console.log(res);});`
 
 **[isPlaying](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/isPlaying)**
 
@@ -144,7 +175,7 @@ Returns true if the receiver is playing audio, otherwise false
 
 Example:
 
-`SpotifyModule.isPlaying((res)=>{console.log(res);});`
+`SpotifyAuth.isPlaying((res)=>{console.log(res);});`
 
 **[volume](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/volume)**
 
@@ -157,7 +188,7 @@ Returns the volume
 
 Example:
 
-`SpotifyModule.volume((res)=>{console.log(res);});`
+`SpotifyAuth.volume((res)=>{console.log(res);});`
 
 **[shuffle](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/shuffle)**
 
@@ -170,7 +201,7 @@ Returns true if the receiver expects shuffled playback, otherwise false
 
 Example:
 
-`SpotifyModule.shuffle((res)=>{console.log(res);});`
+`SpotifyAuth.shuffle((res)=>{console.log(res);});`
 
 **[repeat](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/repeat)**
 
@@ -183,7 +214,7 @@ Returns true if the receiver expects repeated playback, otherwise false
 
 Example:
 
-`SpotifyModule.repeat((res)=>{console.log(res);});`
+`SpotifyAuth.repeat((res)=>{console.log(res);});`
 
 **[currentPlaybackPosition](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/currentPlaybackPosition)**
 
@@ -196,7 +227,7 @@ Returns the current approximate playback position of the current track
 
 Example:
 
-`SpotifyModule.currentPlaybackPosition((res)=>{console.log(res);});`
+`SpotifyAuth.currentPlaybackPosition((res)=>{console.log(res);});`
 
 **[currentTrackDuration](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/currentTrackDuration)**
 
@@ -209,7 +240,7 @@ Returns the length of the current track
 
 Example:
 
-`SpotifyModule.currentTrackDuration((res)=>{console.log(res);});`
+`SpotifyAuth.currentTrackDuration((res)=>{console.log(res);});`
 
 **[currentTrackURI](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/currentTrackURI)**
 
@@ -222,7 +253,7 @@ Returns the current track URI, playing or not
 
 Example:
 
-`SpotifyModule.currentTrackURI((res)=>{console.log(res);});`
+`SpotifyAuth.currentTrackURI((res)=>{console.log(res);});`
 
 **[currentTrackIndex](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/currentTrackIndex)**
 
@@ -235,7 +266,7 @@ Returns the currenly playing track index
 
 Example:
 
-`SpotifyModule.currentTrackIndex((res)=>{console.log(res);});`
+`SpotifyAuth.currentTrackIndex((res)=>{console.log(res);});`
 
 **[targetBitrate](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/targetBitrate)**
 
@@ -248,7 +279,7 @@ Returns the current streaming bitrate the receiver is using
 
 Example:
 
-`SpotifyModule.targetBitrate((res)=>{console.log(res);});`
+`SpotifyAuth.targetBitrate((res)=>{console.log(res);});`
 
 ### *Methods:*
 
@@ -262,7 +293,7 @@ Logout from Spotify
 
 Example:
 
-`SpotifyModule.logout();`
+`SpotifyAuth.logout();`
 
 **[-setVolume:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/setVolume:callback:)**
 
@@ -275,7 +306,7 @@ Set playback volume to the given level. Volume is a value between `0.0` and `1.0
 
 Example:
 
-`SpotifyModule.setVolume(0.8,(error)=>{console.log(error);});`
+`SpotifyAuth.setVolume(0.8,(error)=>{console.log(error);});`
 
 **[-setTargetBitrate:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/setTargetBitrate:callback:)**
 
@@ -288,7 +319,7 @@ Set the target streaming bitrate. `0` for low, `1` for normal and `2` for high
 
 Example:
 
-`SpotifyModule.setTargetBitrate(2,(error)=>{console.log(error);});`
+`SpotifyAuth.setTargetBitrate(2,(error)=>{console.log(error);});`
 
 **[-seekToOffset:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/seekToOffset:callback:)**
 
@@ -301,7 +332,7 @@ Seek playback to a given location in the current track (in secconds).
 
 Example:
 
-`SpotifyModule.seekToOffset(110,(error)=>{console.log(error);});`
+`SpotifyAuth.seekToOffset(110,(error)=>{console.log(error);});`
 
 **[-playURIs:withOptions:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/playURIs:withOptions:callback:)**
 
@@ -315,7 +346,7 @@ Play a list of Spotify URIs.(at most 100 tracks).`SPTPlayOptions` containing ext
 
 Example:
 
-`SpotifyModule.playURIs(["spotify:track:6HxIUB3fLRS8W3LfYPE8tP",...], {trackIndex :0, startTime:12.0},(error)=>{console.log(error)});`
+`SpotifyAuth.playURIs(["spotify:track:6HxIUB3fLRS8W3LfYPE8tP",...], {trackIndex :0, startTime:12.0},(error)=>{console.log(error)});`
 
 **[-replaceURIs:withCurrentTrack:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/replaceURIs:withCurrentTrack:callback:)**
  
@@ -329,7 +360,7 @@ Example:
 
 Example:
 
-`SpotifyModule.replaceURIs(["spotify:track:6HxIUB3fLRS8W3LfYPE8tP",...], 0, (error)=>{console.log(error)});`
+`SpotifyAuth.replaceURIs(["spotify:track:6HxIUB3fLRS8W3LfYPE8tP",...], 0, (error)=>{console.log(error)});`
 
 **[-playURI:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/playURI:callback:)**
 
@@ -342,7 +373,7 @@ Play a Spotify URI.
 
 Example:
 
-`SpotifyModule.playURI("spotify:track:6HxIUB3fLRS8W3LfYPE8tP",(error)=>{console.log(error);});`
+`SpotifyAuth.playURI("spotify:track:6HxIUB3fLRS8W3LfYPE8tP",(error)=>{console.log(error);});`
 
 **[-queueURI:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/queueURI:callback:)**
 
@@ -355,7 +386,7 @@ Queue a Spotify URI.
 
 Example:
 
-`SpotifyModule.queueURI("spotify:track:6HxIUB3fLRS8W3LfYPE8tP",(error)=>{console.log(error);});`
+`SpotifyAuth.queueURI("spotify:track:6HxIUB3fLRS8W3LfYPE8tP",(error)=>{console.log(error);});`
 
 **[-setIsPlaying:callback:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/setIsPlaying:callback:)**
 
@@ -368,7 +399,7 @@ Set the "playing" status of the receiver.
 
 Example:
 
-`SpotifyModule.setIsPlaying(true,(error)=>{console.log(error);});`
+`SpotifyAuth.setIsPlaying(true,(error)=>{console.log(error);});`
 
 **[-stop:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/stop:)**
 
@@ -380,7 +411,7 @@ Stop playback and clear the queue and list of tracks.
 
 Example:
 
-`SpotifyModule.stop((error)=>{console.log(error);});`
+`SpotifyAuth.stop((error)=>{console.log(error);});`
 
 **[-skipNext:](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/skipNext:)**
 
@@ -392,7 +423,7 @@ Go to the next track in the queue
 
 Example:
 
-`SpotifyModule.skipNext((error)=>{console.log(error);});`
+`SpotifyAuth.skipNext((error)=>{console.log(error);});`
 
 **[-skipPrevious:(RCTResponseSenderBlock)block](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/skipPrevious:)**
 
@@ -404,7 +435,7 @@ Go to the previous track in the queue
 
 Example:
 
-`SpotifyModule.skipPrevious((error)=>{console.log(error);});`
+`SpotifyAuth.skipPrevious((error)=>{console.log(error);});`
 
 ___
 
@@ -425,7 +456,7 @@ Go to the previous track in the queue *You need to have a session first*
 
 Example:
 ```javascript
-SpotifyModule.performSearchWithQuery('lacri','artist',0,'US',(err, res)=>{
+SpotifyAuth.performSearchWithQuery('lacri','artist',0,'US',(err, res)=>{
       console.log('error', err);
       console.log('result', res);
     });
@@ -438,7 +469,7 @@ ___
 >Included in the repo.
 
 
-![alt text](https://github.com/viestat/react-native-spotify/blob/master/spotifyModuleDemoEdit.gif?raw=true = 250x "Demo")
+![alt text](https://github.com/viestat/react-native-spotify/blob/master/SpotifyAuthDemoEdit.gif?raw=true = 250x "Demo")
 
 ___
 
