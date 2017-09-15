@@ -62,8 +62,10 @@
       //Set myScheme to your own Url Scheme
   NSString *myScheme = [[sharedManager myScheme] stringByReplacingOccurrencesOfString:@"://callback" withString:@""];
       if ([url.scheme isEqualToString:myScheme]) {
-        [self hideTheThing];
-        [sharedManager urlCallback:url];
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [sharedManager urlCallback:url];
+          [self hideTheThing];
+        });
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
       }
