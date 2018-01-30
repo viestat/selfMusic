@@ -33,11 +33,12 @@ class logIn extends Component {
           style={styles.button}
           onPress={() => { 
             //Start Auth process
-            SpotifyModule.loggedIn((res) => {
+            SpotifyModule.loggedIn((res, accessToken) => {
               console.warn(res)
               if(!res) {
-                SpotifyModule.startAuthenticationFlow((error) => {
-                    if(!error){
+                SpotifyModule.startAuthenticationFlow((error, str) => {
+                  if(!error){
+                      console.log("New Access Token = "+str);
                       this.props.navigator.replace({
                         component: logInSuccess,
                         title: 'Success'
@@ -47,6 +48,7 @@ class logIn extends Component {
                     }
                   });
               } else {
+                console.log("Cached Access Token = "+accessToken);
                 this.props.navigator.replace({
                   component: logInSuccess,
                   title: 'Success'

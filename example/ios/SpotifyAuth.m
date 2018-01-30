@@ -83,7 +83,12 @@ RCT_EXPORT_METHOD(initialized:(RCTResponseSenderBlock)block)
 RCT_EXPORT_METHOD(loggedIn:(RCTResponseSenderBlock)block)
 {
   SPTAudioStreamingController *sharedIn = [SPTAudioStreamingController sharedInstance];
-  block(@[@([sharedIn loggedIn])]);
+  if([sharedIn loggedIn]) {
+    block(@[@([sharedIn loggedIn]), self.auth.session.accessToken]);
+
+  } else {
+    block(@[@([sharedIn loggedIn])]);
+  }
 }
 
 //Returns the volume, as a value between 0.0 and 1.0.
@@ -478,6 +483,7 @@ RCT_EXPORT_METHOD(setRepeat:(NSInteger)mode callback:(RCTResponseSenderBlock)blo
 - (void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didStopPlayingTrack:(NSString *)trackUri
 {
   [self sendEventWithName:@"didStopPlayingTrack" body:@{@"trackUri": trackUri}];
+
 }
 
 /** Called when the audio streaming object requests playback skips to the next track.
@@ -615,9 +621,9 @@ RCT_REMAP_METHOD(
      {
        //if there is an error key in the userInfo dictionary send the error, otherwise null
        if(notification.userInfo[@"error"] != nil){
-         block(@[notification.userInfo[@"error"]]);
-       } else {
-         block(@[[NSNull null]]);
+         block(@[notification.userInfo[@"error"], @"not wow"]);
+       } else if(notification.userInfo[@"token"] != nil) {
+         block(@[[NSNull null], notification.userInfo[@"token"]]);
        }
        
      }];
@@ -687,6 +693,8 @@ RCT_REMAP_METHOD(
         
       } else {
         if (session) {
+          loginRes[@"token"] = session.accessToken;
+          [center postNotificationName:@"loginRes" object:nil userInfo:loginRes];
           // login to the player
           [self.player loginWithAccessToken:self.auth.session.accessToken];
         }
