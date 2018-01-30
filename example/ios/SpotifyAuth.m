@@ -693,11 +693,7 @@ RCT_REMAP_METHOD(
         
       } else {
         if (session) {
-          NSLog(@"here we go");
-          NSString *tempStr = session.accessToken;
-          NSLog(@"Message == %@",tempStr);
-          NSLog(@"and we go");
-          loginRes[@"token"] = tempStr;
+          loginRes[@"token"] = session.accessToken;
           [center postNotificationName:@"loginRes" object:nil userInfo:loginRes];
           // login to the player
           [self.player loginWithAccessToken:self.auth.session.accessToken];
