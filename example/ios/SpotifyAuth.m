@@ -483,6 +483,7 @@ RCT_EXPORT_METHOD(setRepeat:(NSInteger)mode callback:(RCTResponseSenderBlock)blo
 - (void)audioStreaming:(SPTAudioStreamingController *)audioStreaming didStopPlayingTrack:(NSString *)trackUri
 {
   [self sendEventWithName:@"didStopPlayingTrack" body:@{@"trackUri": trackUri}];
+
 }
 
 /** Called when the audio streaming object requests playback skips to the next track.

@@ -16,7 +16,7 @@ const SpotifyModule = NativeModules.SpotifyModule;
 class logIn extends Component {
 
   componentWillMount() {
-    return SpotifyModule.initWithCredentials('448dfcfaec7a4bb1a1d30f8874bd78f1','sample://callback',['streaming'],(error) => {
+    return SpotifyModule.initWithCredentials('your-credentials','your-callback',['streaming'],(error) => {
         if(error){
           alert(`some ${error}`);
         }
