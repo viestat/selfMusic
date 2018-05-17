@@ -621,7 +621,7 @@ RCT_REMAP_METHOD(
      {
        //if there is an error key in the userInfo dictionary send the error, otherwise null
        if(notification.userInfo[@"error"] != nil){
-         block(@[notification.userInfo[@"error"], @"not wow"]);
+         block(@[notification.userInfo[@"error"], @"Error finding user token"]);
        } else if(notification.userInfo[@"token"] != nil) {
          block(@[[NSNull null], notification.userInfo[@"token"]]);
        }

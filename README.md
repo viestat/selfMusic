@@ -131,13 +131,13 @@ Returns true when SPTAudioStreamingController is initialized, otherwise false
 
 Example:
 
-`SpotifyModule.initialized((res)=>{console.log(res);});`
+`SpotifyModule.initialized((res, accessToken)=>{console.log(res, accessToken);});`
 
 ---
 
 **[loggedIn](https://developer.spotify.com/ios-sdk-docs/Documents/Classes/SPTAudioStreamingController.html#//api/name/loggedIn)**
 
-Returns true if the receiver is logged into the Spotify service, otherwise false
+Returns a boolean if the receiver is logged into the Spotify service or not, and also returns the Spotify access token if you also want to use the web API.
 
 
 | Parameter |description|

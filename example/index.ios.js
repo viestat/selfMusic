@@ -38,7 +38,7 @@ class logIn extends Component {
               if(!res) {
                 SpotifyModule.startAuthenticationFlow((error, str) => {
                   if(!error){
-                      console.log("New Access Token = "+str);
+                      console.log(`New Access Token ${str}`);
                       this.props.navigator.replace({
                         component: logInSuccess,
                         title: 'Success'
@@ -48,7 +48,7 @@ class logIn extends Component {
                     }
                   });
               } else {
-                console.log("Cached Access Token = "+accessToken);
+                console.log(`Cached Access Token ${accessToken}`);
                 this.props.navigator.replace({
                   component: logInSuccess,
                   title: 'Success'
